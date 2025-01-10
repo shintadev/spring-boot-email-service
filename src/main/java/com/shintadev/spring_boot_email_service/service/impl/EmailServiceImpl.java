@@ -17,20 +17,33 @@ public class EmailServiceImpl implements EmailService {
   @Override
   public String sendTextEmail(Email email) {
     emailUtil.sendTextEmail(email.getTo(), email.getSubject(), email.getBody());
-    return "Email sent to " + email.getTo() + " with subject " + email.getSubject() + " and text " + email.getBody();
+
+    return "Email sent to " + email.getTo()
+        + " with subject " + email.getSubject()
+        + " and text " + email.getBody();
   }
 
   @Override
   public String sendHtmlEmail(Email email) {
     emailUtil.sendHtmlEmail(email.getTo(), email.getSubject(), email.getBody());
-    return "Email sent to " + email.getTo() + " with subject " + email.getSubject() + " and html " + email.getBody();
+
+    return "Email sent to " + email.getTo()
+        + " with subject " + email.getSubject()
+        + " and html " + email.getBody();
   }
 
   @Override
   public String sendEmailWithAttachment(Email email) {
-    emailUtil.sendEmailWithAttachment(email.getTo(), email.getSubject(), email.getBody(), email.getAttachmentName(),
+    emailUtil.sendEmailWithAttachment(
+        email.getTo(),
+        email.getSubject(),
+        email.getBody(),
+        email.getAttachmentName(),
         email.getAttachmentData());
-    return "Email sent to " + email.getTo() + " with subject " + email.getSubject() + " and text " + email.getBody()
+
+    return "Email sent to " + email.getTo()
+        + " with subject " + email.getSubject()
+        + " and text " + email.getBody()
         + " and attachment " + email.getAttachmentName();
   }
 
