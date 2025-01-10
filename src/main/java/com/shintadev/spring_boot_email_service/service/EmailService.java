@@ -1,10 +1,14 @@
 package com.shintadev.spring_boot_email_service.service;
 
+import com.shintadev.spring_boot_email_service.entity.email.Email;
+
 public interface EmailService {
 
-  String sendTextEmail(String to, String subject, String text);
+  String sendTextEmail(Email email);
 
-  String sendHtmlEmail(String to, String subject, String html);
+  String sendHtmlEmail(Email email);
 
-  String sendEmailWithAttachment(String to, String subject, String text, String attachment);
+  String sendEmailWithAttachment(Email email);
+
+  String sendEmailWithMultipleAttachments(Email email);
 }

@@ -12,5 +12,6 @@ public class Email extends BaseEntity {
   private String to;
   private String subject;
   private String body;
-  private String attachment;
+  private String attachmentName;
+  private byte[] attachmentData;
 }
