@@ -58,7 +58,9 @@ public class KafkaServiceImpl implements KafkaService {
       }
 
       log.info("Consumed message: {}", message);
-      ack.acknowledge();
+      if (ack != null) {
+        ack.acknowledge();
+      }
     } catch (Exception e) {
       kafkaTemplate.send("dead-letter-email-topic", message);
       log.error("Failed to process message: Error {}", e.getMessage());
