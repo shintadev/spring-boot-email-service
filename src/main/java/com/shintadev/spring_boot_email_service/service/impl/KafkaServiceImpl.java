@@ -24,52 +24,51 @@ public class KafkaServiceImpl implements KafkaService {
   @Autowired
   private ObjectMapper objectMapper;
 
-  @Autowired
-  private EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
-  @Autowired
-  private KafkaTemplate<String, String> kafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
 
-  @Override
-  @KafkaListener(topics = { "text-email-topic", "html-email-topic",
-      "email-with-attachment-topic" }, groupId = "email-group")
-  public void consumeMessage(
-      String message,
-      @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-      Acknowledgment ack) {
-    try {
-      Email email = parseEmailMessage(message);
+    @Override
+    @KafkaListener(topics = { "text-email-topic", "html-email-topic",
+        "email-with-attachment-topic" }, groupId = "email-group")
+    public void consumeMessage(String message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic, Acknowledgment ack) {
+      try {
+        Email email = parseEmailMessage(message);
 
-      switch (topic) {
-        case "text-email-topic":
-          emailService.sendTextEmail(email);
-          break;
+            switch (topic) {
+              case "text-email-topic":
+                emailService.sendTextEmail(email);
+                break;
 
-        case "html-email-topic":
-          emailService.sendHtmlEmail(email);
-          break;
+                  case "html-email-topic":
+                    emailService.sendHtmlEmail(email);
+                    break;
 
-        case "email-with-attachment-topic":
-          emailService.sendEmailWithAttachment(email);
-          break;
+                  case "email-with-attachment-topic":
+                    emailService.sendEmailWithAttachment(email);
+                    break;
 
-        default:
-          throw new IllegalArgumentException("Unknown topic: " + topic);
-      }
+                  default:
+                    throw new IllegalArgumentException("Unknown topic: " + topic);
+                }
 
-      log.info("Consumed message: {}", message);
-      if (ack != null) {
-        ack.acknowledge();
-      }
-    } catch (Exception e) {
-      kafkaTemplate.send("dead-letter-email-topic", message);
-      log.error("Failed to process message: Error {}", e.getMessage());
+            log.info("Consumed message from topic {}: {}", topic, message);
+            if (ack != null) {
+              ack.acknowledge();
+            }
+          } catch (IOException e) {
+            log.error("Failed to parse email message: {}", message, e);
+            kafkaTemplate.send("dead-letter-email-topic", message);
+          } catch (Exception e) {
+          log.error("Failed to process message from topic {}: {}", topic, message, e);
+            kafkaTemplate.send("dead-letter-email-topic", message);
+          }
+        }
+
+    @Override
+    public Email parseEmailMessage(String message) throws IOException {
+      return objectMapper.readValue(message, Email.class);
     }
-  }
-
-  @Override
-  public Email parseEmailMessage(String message) throws IOException {
-    return objectMapper.readValue(message, Email.class);
-  }
-
 }
