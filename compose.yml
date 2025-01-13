@@ -31,11 +31,18 @@ services:
     container_name: spring-boot-app
     depends_on:
       - kafka
+    secrets:
+      - email-username
+      - email-password
     environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
     networks:
       - kafka-network
-
+secrets:
+  email-username:
+    file: env/app/email-username.txt
+  email-password:
+    file: env/app/email-password.txt
 networks:
   kafka-network:
     driver: bridge

@@ -1,11 +1,14 @@
 spring:
   application:
     name: spring-boot-email-service
+  config:
+    import:
+    - optional:configtree:/run/secrets/
   mail:
-    host: smtp.xxx.com
+    host: smtp.gmail.com
     port: 587
-    username: xxx@xxx.com
-    password: xxx
+    username: ${email-username}
+    password: ${email-password}
     default-encoding: UTF-8
     properties:
       mail:
@@ -15,6 +18,7 @@ spring:
             enable: true
             required: true
   kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
     consumer:
       group-id: email-group
       auto-offset-reset: earliest
